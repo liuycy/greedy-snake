@@ -12,7 +12,7 @@ let wall = {
   height: 0,
 }
 
-const SNAKE_HEAD = '۞'
+const SNAKE_HEAD = '@'
 const SNAKE_BODY = '○'
 const BIRD_EGG = '●'
 exports.SNAKE_HEAD = SNAKE_HEAD
@@ -31,6 +31,13 @@ function start() {
   timer = setInterval(() => {
     drawFrame()
   }, interval)
+}
+
+function gameover() {
+  stop()
+  screen.clear()
+  console.log('GAME OVER !')
+  process.exit()
 }
 
 function initFrame(width, height) {
@@ -72,6 +79,10 @@ function drawFrame() {
     dots[body.y][body.x] = SNAKE_BODY
     nextBody.push(body)
   }
+
+  if (head.y < 0 || head.y >= wall.height) gameover()
+  if (head.x < 0 || head.x >= wall.width) gameover()
+  if (dots[head.y][head.x] === SNAKE_BODY) gameover()
 
   if (prevDots && prevDots[head.y][head.x] === BIRD_EGG) {
     let body = snake.body[snake.length - 1]

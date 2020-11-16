@@ -72,7 +72,9 @@ function drawFrame() {
 
   let nextBody = []
   let head = next(snake.body[0])
+  if (!head) gameover()
   nextBody.push(head)
+  if (!dots[head.y]) gameover()
   dots[head.y][head.x] = SNAKE_HEAD
   for (let i = 1; i < snake.length; i++) {
     let body = snake.body[i - 1]
@@ -89,7 +91,16 @@ function drawFrame() {
     dots[body.y][body.x] = SNAKE_BODY
     nextBody.push(body)
     snake.length += 1
+    interval =
+      interval > 150
+        ? interval - 50
+        : interval > 50
+        ? interval - 10
+        : interval > 50
+        ? interval - 5
+        : 50
     egg = null
+    prevDots = null
   }
 
   if (!egg) {

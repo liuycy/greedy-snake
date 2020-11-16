@@ -14,8 +14,10 @@ let wall = {
 
 const SNAKE_HEAD = '۞'
 const SNAKE_BODY = '○'
+const BIRD_EGG = '●'
 exports.SNAKE_HEAD = SNAKE_HEAD
 exports.SNAKE_BODY = SNAKE_BODY
+exports.BIRD_EGG = BIRD_EGG
 
 function initFrame(width, height) {
   wall.width = width
@@ -38,6 +40,9 @@ function initFrame(width, height) {
   }
 }
 
+let prevDots
+let egg = null
+
 function drawFrame() {
   let dots = []
   for (let col = 0; col < wall.height; col++) {
@@ -54,9 +59,32 @@ function drawFrame() {
     nextBody.push(body)
   }
 
+  if (prevDots && prevDots[head.y][head.x] === BIRD_EGG) {
+    let body = snake.body[snake.length - 1]
+    dots[body.y][body.x] = SNAKE_BODY
+    nextBody.push(body)
+    snake.length += 1
+    egg = null
+  }
+
+  if (!egg) {
+    egg = layAEgg()
+    while (dots[egg.y][egg.x] !== ' ') {
+      egg = layAEgg()
+    }
+  }
+  dots[egg.y][egg.x] = BIRD_EGG
+
   screen.draw(dots)
+  prevDots = dots
   snake.body = nextBody
   snake.head = snake.body[0]
+}
+
+function layAEgg() {
+  let x = ~~(wall.width * Math.random())
+  let y = ~~(wall.height * Math.random())
+  return { x, y }
 }
 
 function tail({ x, y }) {
@@ -88,7 +116,7 @@ exports.init = function (width = 50, height = 30) {
 }
 
 let timer
-let interval = 1000
+let interval = 500
 exports.interval = interval
 
 function stop() {

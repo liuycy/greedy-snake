@@ -19,6 +19,20 @@ exports.SNAKE_HEAD = SNAKE_HEAD
 exports.SNAKE_BODY = SNAKE_BODY
 exports.BIRD_EGG = BIRD_EGG
 
+let timer
+let interval = 500
+exports.interval = interval
+
+function stop() {
+  clearInterval(timer)
+}
+
+function start() {
+  timer = setInterval(() => {
+    drawFrame()
+  }, interval)
+}
+
 function initFrame(width, height) {
   wall.width = width
   wall.height = height
@@ -103,7 +117,10 @@ function next({ x, y }) {
 
 exports.trunTo = turnTo
 function turnTo(direction) {
+  stop()
   snake.direction = direction
+  drawFrame()
+  start()
 }
 
 exports.init = function (width = 50, height = 30) {
@@ -113,18 +130,4 @@ exports.init = function (width = 50, height = 30) {
   drawFrame()
   start()
   process.on('SIGINT', stop)
-}
-
-let timer
-let interval = 500
-exports.interval = interval
-
-function stop() {
-  clearInterval(timer)
-}
-
-function start() {
-  timer = setInterval(() => {
-    drawFrame()
-  }, interval)
 }
